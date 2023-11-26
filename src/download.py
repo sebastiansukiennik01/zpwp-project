@@ -49,6 +49,8 @@ def combine_datasets():
             row["date"] = pd.to_datetime(row["date"])
         except:
             data.drop(index=row.name, inplace=True)
-    data["date"] = pd.to_datetime(data["date"], format="mixed")
+    data["datetime"] = pd.to_datetime(data["date"], format="mixed")
+    data = data.loc[data["datetime"].dt.year != 2015, :]
+    data = data.loc[data["datetime"].dt.year != 2018, :]
 
     data.to_csv(out_path)
