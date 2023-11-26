@@ -160,3 +160,6 @@ cython_debug/
 #.idea/
 
 .DS_Store
+./real_fake/Fake.csv
+./real_fake/True.csv
+./real_fake/Data.csv
