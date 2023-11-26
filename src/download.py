@@ -7,7 +7,7 @@ import os
 def get_data():
     kaggle.api.authenticate()
     kaggle.api.dataset_download_files(
-        "clmentbisaillon/fake-and-real-news-dataset/", path="rael_fake", unzip=True
+        "clmentbisaillon/fake-and-real-news-dataset/", path="real_fake", unzip=True
     )
 
 
@@ -18,6 +18,17 @@ def truncate_data(filename: list):
         out_path = os.path.join("real_fake", f"{name}_short.csv")
 
         df = pd.read_csv(file_path, index_col=[0]).dropna()
+
+        df["subject"] = df["subject"].replace(
+            {
+                "News": "worldnews",
+                "politics": "politicsNews",
+                "Government News": "politicsNews",
+                "left-news": "politicsNews",
+                "Middle-east": "worldnews",
+                "US_News": "politicsNews",
+            }
+        )
 
         indexes = np.random.randint(0, df.shape[0], 5000)
         df.iloc[indexes, :].to_csv(out_path)

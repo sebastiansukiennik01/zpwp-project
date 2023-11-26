@@ -2,9 +2,8 @@ import pandas as pd
 from src.download import get_data, truncate_data, combine_datasets
 
 if __name__ == "__main__":
-    ...
-    # get_data()  # pobieranie danych do ./real_fake/Fake.csv, ./real_fake/True.csv
-    # truncate_data(["Fake", "True"]) # truncate data to 5000 sample
+    get_data()  # pobieranie danych do ./real_fake/Fake.csv, ./real_fake/True.csv
+    truncate_data(["Fake", "True"])  # truncate data to 5000 sample
     combine_datasets()  # combine fake and true into one dataset
 
     # TODO
