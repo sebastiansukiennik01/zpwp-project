@@ -4,9 +4,12 @@ import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from functools import reduce
 
 
-def add_words_count(data: pd.DataFrame, k: int, column: str) -> pd.DataFrame:
+def add_words_count(
+    data: pd.DataFrame, k: int = 10, columns: list = ["title", "text"]
+) -> pd.DataFrame:
     """
     Extraxts top 'k' most frequent words in column, and adds 'k' columns,
     where each column represents one of the most frequent words and
@@ -53,21 +56,29 @@ def add_words_count(data: pd.DataFrame, k: int, column: str) -> pd.DataFrame:
         "over",
         "with",
     ]
-    data[column] = data[column].str.lower()
-    top_k_words = (
-        data[column]
-        .str.replace("(\[|\]|\(|\))", "", regex=True)
-        .str.split(expand=True)
-        .stack()
-        .value_counts()
-        .drop(to_drop, errors="ignore")
-        .head(k)
-    )
+    for column in columns:
+        data[column] = data[column].str.lower()
+        top_k_words = (
+            data[column]
+            .str.replace("(\[|\]|\(|\))", "", regex=True)
+            .str.split(expand=True)
+            .stack()
+            .value_counts()
+            .drop(to_drop, errors="ignore")
+            .head(k)
+        )
 
-    for word, _ in top_k_words.items():
-        data[f"{column}_{word}"] = data[column].str.count(word)
+        for word, _ in top_k_words.items():
+            data[f"{column}_{word}"] = data[column].str.count(word)
 
     return data
+
+
+def add_date_info(*funcs):
+    def helper(initial):
+        return reduce(lambda acc, f: f(acc), reversed(funcs), initial)
+
+    return helper
 
 
 def add_day_of_week(data: pd.DataFrame) -> pd.DataFrame:
